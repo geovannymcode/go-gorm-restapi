@@ -17,9 +17,19 @@ func main() {
 
 	r := mux.NewRouter()
 	r.HandleFunc("/", routes.HomeHandler)
-	r.HandleFunc("/users", routes.GetUsersHandler).Methods("GET")
-	r.HandleFunc("/users/{id}", routes.GetUserByIdHandler).Methods("GET")
-	r.HandleFunc("/users", routes.CreatedUserHandler).Methods("POST")
-	r.HandleFunc("/users", routes.DeleteUserHandler).Methods("DELETE")
+	s := r.PathPrefix("/api").Subrouter()
+
+	//user
+	s.HandleFunc("/users", routes.GetUsersHandler).Methods("GET")
+	s.HandleFunc("/users/{id}", routes.GetUserByIdHandler).Methods("GET")
+	s.HandleFunc("/users", routes.CreatedUserHandler).Methods("POST")
+	s.HandleFunc("/users/{id}", routes.DeleteUserHandler).Methods("DELETE")
+	s.HandleFunc("/users/{id}", routes.UpdateUserHandler).Methods("PUT")
+
+	//task
+	s.HandleFunc("/tasks", routes.GetAllTasksHandler).Methods("GET")
+	s.HandleFunc("/tasks", routes.CreateTaskHandler).Methods("POST")
+	s.HandleFunc("/tasks/{id}", routes.GetTaskByIdHandler).Methods("GET")
+	s.HandleFunc("/users/{id}", routes.DeleteUserHandler).Methods("DELETE")
 	http.ListenAndServe(":4000", r)
 }
